@@ -29,8 +29,19 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		final JTextField textNombrePoint = new JTextField("50");
 		textNombrePoint.setColumns(5);
 		
+		JButton calculer = new JButton("Calculer");
+		
+		calculer.addActionListener( new ActionListener(){
+			public void actionPerformed(ActionEvent evt) {
+				// Suppression des points et des segments
+				canvas.calculer();
+			}
+		}
+	);
 		// Creation du bouton Effacer
 		JButton effacer = new JButton("Effacer");
+		
+		
 		
 		// Action du bouton Effacer
 		effacer.addActionListener( new ActionListener(){
@@ -38,6 +49,9 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 					// Suppression des points et des segments
 					canvas.points.removeAllElements();
 					canvas.segments.removeAllElements();
+					canvas.drawingLine = false;
+					canvas.firstPoint = null;
+					canvas.secondPoint = null;
 					canvas.repaint();
 				}
 			}
@@ -59,8 +73,9 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 					{
 						canvas.points.addElement(
 							new Point(
-								2 + Algorithmes.rand(canvas.getWidth()-4),
-								2 + Algorithmes.rand(canvas.getHeight()-4)
+		
+								2 + Algorithme.rand(canvas.getWidth()-4),
+								2 + Algorithme.rand(canvas.getHeight()-4)
 							)
 						);
 					}
@@ -71,6 +86,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		);
 		
 		// Ajout des boutons au panel panelBoutons
+		panelBoutons.add(calculer);
 		panelBoutons.add(effacer);
 		panelBoutons.add(rand);
 		panelBoutons.add(textNombrePoint);
@@ -86,6 +102,9 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 
 /** La classe CanvasSaisirPointsAfficherSegments. */
 class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener, MouseMotionListener {
+	Point firstPoint = null;
+	Point secondPoint = null;
+	boolean drawingLine = false;
 	/** La liste des points affiches. */
 	Vector<Point> points;
 	
@@ -160,7 +179,7 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 		for (int n = 0; n < segments.size(); n++) {
 			Segment segment = segments.elementAt(n);
 			g.setColor(segmentColor);
-			g.drawLine((int)segment.a.x,(int)segment.a.y,(int)segment.b.x,(int)segment.b.y);
+			g.drawLine((int)segment.upper.x,(int)segment.upper.y,(int)segment.lower.x,(int)segment.lower.y);
 		}
 	}
 	
@@ -192,34 +211,89 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 			if (numSelectedPoint == -1)
 			{
 				numSelectedPoint = points.size();
-				points.addElement(new Point(evt.getX(), evt.getY()));
-				calculer();
+				Point p = new Point(evt.getX(), evt.getY());
+				if (drawingLine) {
+					secondPoint = p;
+				}
+				else {
+					firstPoint = p;
+				}
+				
+				points.addElement(p);
+				
 				repaint();
 			}
+			else {
+				Point p = points.elementAt(numSelectedPoint);
+				System.out.println("Seclect by click "+ numSelectedPoint);
+				if (drawingLine) {
+					secondPoint = p;
+				}
+				else {
+					firstPoint = p;
+				}
+				
+			}
 		}
-		else
+		/*else
 		{
 			if (numSelectedPoint != -1)
 			{
+				Point p = points.elementAt(numSelectedPoint);
+				for (int i = 0; i < segments.size(); i++) {
+					Point upper = segments.elementAt(i).upper;
+					Point lower = segments.elementAt(i).lower;
+					if (upper.compareTo(p) == 0 || lower.compare)
+				}
 				points.removeElementAt(numSelectedPoint);
 				numSelectedPoint = getNumSelectedPoint(evt.getX(), evt.getY());
+				if (drawingLine) {
+					secondPoint = new Point(evt.getX(), evt.getY());
+				}
+				else {
+					firstPoint = new Point(evt.getX(), evt.getY());
+				}
 				calculer();
 				repaint();
 			}
-		}
+		} */
 	}
 	
 	/** Le x et y du point numSelectedPoint est modifie si
 	 * 	la souris change de position avec un bouton enfonce.
 	 */
 	public void mouseDragged(MouseEvent evt) {
-		if (numSelectedPoint != -1)
+		/*if (numSelectedPoint != -1)
 		{
+			double x = points.elementAt(numSelectedPoint).x;
+			double y = points.elementAt(numSelectedPoint).y;
+			Point p = new Point(x,y);
 			points.elementAt(numSelectedPoint).x = evt.getX();
 			points.elementAt(numSelectedPoint).y = evt.getY();
+			Point new_p = points.elementAt(numSelectedPoint);
+			for (int i = 0; i < segments.size(); i++) {
+				Segment s = segments.elementAt(i);
+				Point upper = s.upper;
+				Point lower = s.lower;
+				if (s.upper.compareTo(p) == 0) {
+					segments.remove(i);
+					s = new Segment(new_p,lower);
+				}
+				if (s.lower.compareTo(p) == 0) {
+					segments.remove(i);
+					s = new Segment(upper,new_p);
+				}
+				segments.add(s);
+			}
+			if (drawingLine) {
+				secondPoint = new Point(evt.getX(), evt.getY());
+			}
+			else {
+				firstPoint = new Point(evt.getX(), evt.getY());
+			}
 			calculer();
 			repaint();
-		}
+		}*/
 	}
 	
 	/** Le numSelectedPoint est calcule si
@@ -227,13 +301,14 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 	 */
 	public void mouseMoved(MouseEvent evt) {
 		numSelectedPoint = getNumSelectedPoint(evt.getX(), evt.getY());
+		//System.out.println("selected Point " + numSelectedPoint);
 		repaint();
 	}
 	
 	/** Lance l'algorithme sur l'ensemble de points. */
 	public void calculer()
 	{
-		segments = construireSegment(points);
+		segments = Algorithme.algorithme1(segments);
 		System.out.println("Segment.size() =  " + segments.size());
 	}
 	/** Calcule les segments à partir d'une liste de points de nombre pair
@@ -269,7 +344,21 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 		} 
 		return seg;
 	}
-	public void mouseReleased(MouseEvent evt) {}
+	public void mouseReleased(MouseEvent evt) {
+		if (drawingLine) {
+			Segment seg = new Segment(firstPoint, secondPoint);
+			segments.add(seg);
+			drawingLine = false;
+			//calculer();
+			
+		}
+		else {
+			drawingLine = true;
+		}
+		
+		repaint();
+		
+	}
 	public void mouseEntered(MouseEvent evt) {}
 	public void mouseExited(MouseEvent evt) {}
 	public void mouseClicked(MouseEvent evt) {}

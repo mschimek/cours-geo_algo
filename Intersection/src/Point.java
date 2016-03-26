@@ -38,4 +38,7 @@ public class Point implements Comparable<Point>
 		
 		return 0;
 	}
+	public String toString() {
+		return "(" + x + ", " + y + ")";
+	}
 }
