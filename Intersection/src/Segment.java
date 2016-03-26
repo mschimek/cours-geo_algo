@@ -1,6 +1,7 @@
 /** La classe segment */
 public class Segment 
 {
+	public Point upperSave;
 	/** L'extremite a. */
 	public Point upper;
 	
@@ -10,11 +11,15 @@ public class Segment
 	/** Constructeur avec initialisation de a et b. */
 	public Segment(Point a, Point b)
 	{
+		a = new Point(a.x,a.y);
+		b = new Point(b.x,b.y);
 		upper = upper(a, b);
 		if (upper == a)
 			lower = b;
 		else
 			lower = a;
+		
+		upperSave = new Point(upper.x, upper.y);
 	}
 	
 	/** Constructeur sans initialisation. */
@@ -33,7 +38,7 @@ public class Segment
 	}
 	@Override
 	public String toString() {
-		return "Segment: upper=" + this.upper + " lower= " + this.lower;
+		return "Segment: upper=" + this.upper+"/save="+ upperSave  + " lower= " + this.lower +"\n";
 	}
 	@Override
 	public boolean equals(Object o) {

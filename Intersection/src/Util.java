@@ -31,7 +31,15 @@ public class Util {
 		
 		if (withoutEndpointCheck)
 			return intersection;
-		
+		if (Util.isHorizontal(s1)) {
+			if (s1.upper.x > s1.lower.x)
+				return null;
+		}
+		if (Util.isHorizontal(s2)) {
+			if (s2.upper.x > s2.lower.x)
+				return null;
+		}
+			
 		double s1_min_x = s1.upper.x < s1.lower.x ? s1.upper.x : s1.lower.x;
 		double s2_min_x = s2.upper.x < s2.lower.x ? s2.upper.x : s2.lower.x;
 		double s1_min_y = s1.upper.y < s1.lower.y ? s1.upper.y : s1.lower.y;
@@ -40,13 +48,13 @@ public class Util {
 		double s2_max_x = s2.upper.x > s2.lower.x ? s2.upper.x : s2.lower.x;
 		double s1_max_y = s1.upper.y > s1.lower.y ? s1.upper.y : s1.lower.y;
 		double s2_max_y = s2.upper.y > s2.lower.y ? s2.upper.y : s2.lower.y;
-		if (intersection.x < s1_min_x || intersection.x < s2_min_x)
+		if (intersection.x + MyComparator.EPSILON < s1_min_x || intersection.x + MyComparator.EPSILON < s2_min_x)
 			return null;
-		if (intersection.x > s1_max_x || intersection.x > s2_max_x)
+		if (intersection.x - MyComparator.EPSILON> s1_max_x || intersection.x - MyComparator.EPSILON> s2_max_x)
 			return null;
-		if (intersection.y < s1_min_y || intersection.y < s2_min_y)
+		if (intersection.y + MyComparator.EPSILON < s1_min_y || intersection.y + MyComparator.EPSILON < s2_min_y)
 			return null;
-		if (intersection.y > s1_max_y || intersection.y > s2_max_y)
+		if (intersection.y - MyComparator.EPSILON > s1_max_y || intersection.y - MyComparator.EPSILON> s2_max_y)
 			return null;
 		
 		if (intersection.compareTo(s1.upper) == 0 || intersection.compareTo(s1.lower) == 0) {
@@ -58,7 +66,7 @@ public class Util {
 	}
 	
 	public static boolean isHorizontal(Segment s) {
-		return (s.upper.y == s.lower.y) && (s.upper.y == 0);
+		return (s.upper.y == s.lower.y);
 	}
 	public static Double intersection(Segment s, double y) {
 		Segment y_seg = new Segment(new Point(Integer.MIN_VALUE, y), new Point(Integer.MAX_VALUE, y));
@@ -93,5 +101,13 @@ public class Util {
 		}
 		return new Point(m,c);
 		
+	}
+	public static void main(String[] args) {
+		Segment s1 = new Segment(new Point(129,3), new Point(233,101));
+		Segment s2 = new Segment(new Point(208,35), new Point(196,121));
+		double y = 72.5102766798419 + MyComparator.FORWARD;
+		double x_1 = intersection(s1,y);
+		double x_2 = intersection(s2, y);
+		System.out.println("x_1 " + x_1 + "   x_2 " + x_2);
 	}
 }

@@ -15,11 +15,14 @@ import javax.swing.JTextField;
 /** La classe ZoneSaisirPointsAfficherSegments. */
 public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 
+	JTextField coordinates = new JTextField("x: y:");
+	
+	
 	/** Creation de la zone d'affichage. */
 	public ZoneSaisirPointsAfficherSegments()
 	{
 		// Le canvas d'affichage
-		final CanvasSaisirPointsAfficherSegments canvas = new CanvasSaisirPointsAfficherSegments(); 
+		final CanvasSaisirPointsAfficherSegments canvas = new CanvasSaisirPointsAfficherSegments(this); 
 		
 		// Panel des boutons
 		JPanel panelBoutons = new JPanel();
@@ -29,12 +32,18 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		final JTextField textNombrePoint = new JTextField("50");
 		textNombrePoint.setColumns(5);
 		
+		coordinates.setColumns(10);
+		
 		JButton calculer = new JButton("Calculer");
 		
 		calculer.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent evt) {
 				// Suppression des points et des segments
+				//canvas.segments = SegmentStore.getSeg6();
+				
 				canvas.calculer();
+				//canvas.points = SegmentStore.getPoints(canvas.segments);
+				
 			}
 		}
 	);
@@ -79,7 +88,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 							)
 						);
 					}
-					canvas.calculer();
+					canvas.segments = canvas.construireSegment(canvas.points);
 					canvas.repaint();
 				}
 			}
@@ -90,6 +99,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		panelBoutons.add(effacer);
 		panelBoutons.add(rand);
 		panelBoutons.add(textNombrePoint);
+		panelBoutons.add(coordinates);
 		setLayout(new BorderLayout());
 		
 		// Ajout du canvas au centre
@@ -116,6 +126,8 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 	
 	/** La couleur d'un point a l'ecran. */
 	private final Color pointColor = Color.GRAY;
+	/** La couleur d'un intersection a l'ecran. */
+	private final Color intersectionColor = Color.BLACK;
 	
 	/** La couleur d'un segment a l'ecran. */
 	private final Color segmentColor = Color.BLUE;
@@ -126,9 +138,11 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 	/** La taille d'un point a l'ecran. */
 	private final int POINT_SIZE = 2;
 	
+	private final ZoneSaisirPointsAfficherSegments ref;
 	/** Creation de la zone d'affichage. */
-	public CanvasSaisirPointsAfficherSegments()
+	public CanvasSaisirPointsAfficherSegments(ZoneSaisirPointsAfficherSegments ref)
 	{
+		this.ref = ref;
 		// Creation du vecteur de points
 		points = new Vector<Point>();
 		
@@ -167,6 +181,9 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 				g.setColor(selectedPointColor);
 			else
 				g.setColor(pointColor);
+			
+			if (p.intersection)
+				g.setColor(intersectionColor);
 			
 			g.fillOval((int)(p.x - POINT_SIZE), (int)(p.y - POINT_SIZE), 2 * POINT_SIZE + 1, 2 * POINT_SIZE + 1);
 			g.drawOval((int)(p.x - 2 * POINT_SIZE), (int)(p.y - 2 * POINT_SIZE), 2 * 2 * POINT_SIZE,	2 * 2 * POINT_SIZE);
@@ -302,14 +319,22 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 	public void mouseMoved(MouseEvent evt) {
 		numSelectedPoint = getNumSelectedPoint(evt.getX(), evt.getY());
 		//System.out.println("selected Point " + numSelectedPoint);
+		ref.coordinates.setText("x:" + evt.getX() + "; y:" + evt.getY());
 		repaint();
 	}
 	
 	/** Lance l'algorithme sur l'ensemble de points. */
 	public void calculer()
 	{
-		segments = Algorithme.algorithme1(segments);
+		
+		
+		
 		System.out.println("Segment.size() =  " + segments.size());
+		Result res = Algorithme.algorithme1(segments);
+		segments = res.getSegments();
+		points.addAll(res.getIntersections());
+		repaint();
+				
 	}
 	/** Calcule les segments à partir d'une liste de points de nombre pair
 	 * Exemple: la liste

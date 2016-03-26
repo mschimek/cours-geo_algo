@@ -2,6 +2,7 @@
 public class Point implements Comparable<Point>
 {
 	public static final double EPSILON = 1E-12;
+	public boolean intersection = false;
 	/** Le segment associe à ce point */
 	public Segment seg = null;
 	
