@@ -2,7 +2,7 @@
 public class MyComparator implements java.util.Comparator<Segment>  {
 
 	public static final double EPSILON = 1E-12;
-	public static final double FORWARD = 1E-7;
+	public static final double FORWARD = 5E-10;
 	private double y = 0.0;
 	public void setY(double y) {
 		this.y = y;

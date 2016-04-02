@@ -28,10 +28,35 @@ public class Algorithme {
 		
 		
 		System.out.println("-------------------------------------------------------");
-		System.out.println("intersections " + counter);
+		
 		for (int i = 0; i < segments.size(); i++)
 			resetHorizontal(segments.elementAt(i));
+		System.out.println("intersections " + counter);
 		return new Result(segments,intersections);
+	}
+	static Result bruteForce(Vector<Segment> segments) {
+		//System.out.println("bruteForce");
+		Vector<Point> intersections = new Vector<>();
+		HashSet<Point> intersectionsSet = new HashSet<Point>();
+		
+		for(int i = 0; i < segments.size(); i++) {
+			Segment outer = segments.elementAt(i);
+			for (int j = i + 1; j < segments.size(); j++) {
+				Segment inner = segments.elementAt(j);
+				Point p = Util.intersection(outer, inner, false);
+				
+				if (p != null) {
+					p.intersection = true;
+					if (!intersectionsSet.contains(p)) {
+						intersections.add(p);
+						intersectionsSet.add(p);
+						//System.out.println(p);
+					}
+				}
+			}
+		}
+		//System.out.println("Brute force algorithm found " + intersectionsSet.size() + " intersections");
+		return new Result(segments, intersections);
 	}
 	
 	private static void addToQueue(Event e, TreeSet<Event> queue) {
@@ -127,6 +152,7 @@ public class Algorithme {
 		Point inter = new Point(e.x, e.y);
 		inter.intersection = true;
 		intersections.add(inter);
+		//System.out.println(inter);
 		
 		
 	}
@@ -167,7 +193,7 @@ public class Algorithme {
 				horizontalSwitched.add(s);
 			} 
 			else {
-				double x_res = Util.intersection(s, e.y + MyComparator.FORWARD);
+				double x_res = Util.intersection(s, e.y + MyComparator.FORWARD / 2);
 				x_max = x_max < x_res ? x_res : x_max;
 				sweepLine.add(s);
 				count++;
@@ -271,7 +297,6 @@ public class Algorithme {
 			newEvent.cut.add(s1);
 		if (!newEvent.cut.contains(s2))
 			newEvent.cut.add(s2);
-		
 		addToQueue(newEvent, queue);
 	}
 	public static void handleEvent(Event e, TreeSet<Event> queue, 

@@ -20,6 +20,13 @@ public class SegmentStore {
 	static Segment s16 = new Segment(new Point(50,50), new Point(100,90));
 	static Segment s17 = new Segment(new Point(30,10), new Point(50,50));
 	
+	static Segment s18 = new Segment(new Point(318,399), new Point(400,594));
+	static Segment s19 = new Segment(new Point(409,418), new Point(138,587));
+	static Segment s20 = new Segment(new Point(457,421), new Point(488,577));
+	static Segment s21 = new Segment(new Point(559,496), new Point(129,499));
+	static Segment s22 =new Segment(new Point(400,467), new Point(320,534));
+	static Segment s23 = new Segment(new Point(280,434), new Point(280,520));
+	
 	
 	public static Vector<Segment> getSeg1() {
 		Vector<Segment> segs = new Vector<>();
@@ -70,9 +77,16 @@ public class SegmentStore {
 			segs.add(s);
 		}
 		
-		
-
-
+		return segs;
+	}
+	public static Vector<Segment> getSeg7() {
+		Vector<Segment> segs = new Vector<>();
+		segs.add(s18);
+		segs.add(s19);
+		segs.add(s20);
+		segs.add(s21);
+		segs.add(s22);
+		segs.add(s23);
 		return segs;
 	}
 	public static Vector<Point> getPoints(Vector<Segment> seg) {

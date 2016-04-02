@@ -39,6 +39,13 @@ public class Point implements Comparable<Point>
 		
 		return 0;
 	}
+	public boolean equals(Object o) {
+		if (o instanceof Point) {
+			Point ob = (Point) o;
+			return compareTo(ob) == 0;
+		}
+		return false;
+	}
 	public String toString() {
 		return "(" + x + ", " + y + ")";
 	}

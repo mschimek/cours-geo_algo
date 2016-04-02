@@ -21,7 +21,7 @@ public class Util {
 		double y4 = s2.lower.y;
 		
 		double determinant = (x1-x2)*(y3-y4) - (y1-y2)*(x3-x4);
-		if (determinant == 0) 
+		if (Math.abs(determinant) < MyComparator.EPSILON) 
 			return null;
 		   
 		double inter_x = ((x3-x4)*(x1*y2-y1*x2)-(x1-x2)*(x3*y4-y3*x4))/determinant;
