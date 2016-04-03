@@ -1,5 +1,5 @@
 package delauney;
-
+import java.util.Random;
 
 
 public class Util {
@@ -61,15 +61,14 @@ public class Util {
 	public static Point factor(double alpha, Point p) {
 		return new Point(alpha * p.x, alpha * p.y);
 	}
-	public static void main(String[] args) {
-		Point a = new Point(10,0);
-		Point b = new Point(0,10);
-		Point c = new Point(-10, 0);
-		Triangle t = new Triangle(a,b,c);
-		Circle circle = t.circumscribedCircle();
-		boolean answer = circle.onBorder(new Point(0,10.00006));
-		System.out.println(circle);
-		System.out.println(answer);
+	public static int rightLeft(Point a, Point b, Point c) {
+		double res = (b.x - a.x)*(c.y - a.y)-(c.x-a.x)*(b.y-a.y);
+		if (Math.abs(res) < EPSILON)
+			return 0;
+		if (res > 0)
+			return 1;
+		
+		return -1;
 	}
 	static int vectorProduct(Point p1, Point p2, Point p3) {
 		double x1 = p1.x - p2.x;
@@ -84,5 +83,43 @@ public class Util {
 		
 		return product > 0 ? 1 : -1;
 	}
+	static int[] randomPermutation(int n) {
+		int[] permutation = new int[n];
+		for (int i = 0; i < n; i++) {
+			permutation[i] = i;
+		}
+		Random rand = new Random();
+		for (int j = 0; j < 1; j++) {
+			for (int i = n - 1; i >= 0; i--) {
+				int r = rand.nextInt(i + 1);
+				int tmp = permutation[r];
+				permutation[r] = permutation[i];
+				permutation[i] = tmp;
+			}
+		}
+		return permutation;
+	}
+	/*
+	public static void main(String[] args) {
+		Point a = new Point(10,0);
+		Point b = new Point(0,10);
+		Point c = new Point(-10, 0);
+		Triangle t = new Triangle(a,b,c,null);
+		Circle circle = t.circumscribedCircle();
+		boolean answer = circle.onBorder(new Point(0,10.00006));
+		System.out.println(circle);
+		System.out.println(answer);
+		int counter = 0;
+		for(int i = 0; i < 0; i++) {
+			int[] permut = randomPermutation(9);
+			if (permut[0] == 0)
+				counter++;
+			for (int j = 0; j < permut.length; j++) {
+				System.out.print(permut[j] + " ");
+			}
+			System.out.println();
+		}
+		System.out.println("\n counter: " + counter);
+	} */
 }
 

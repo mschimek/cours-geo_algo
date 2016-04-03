@@ -8,15 +8,19 @@ public class Triangle {
 	public Triangle bc;
 	public Triangle ac;
 	public Circle circumscribedCircle;
-	public Tree container = null;
+	public Node container = null;
 	public Triangle(Point a, Point b, Point c) {
 		this.a = a;
 		this.b = b;
 		this.c = c;
 		this.circumscribedCircle = circumscribedCircle();
 	}
-	public Triangle(Point a, Point b, Point c, Triangle ab, Triangle bc, Triangle ac) {
-		this(a,b,c);
+	public Triangle(Point a, Point b, Point c, Node container) {
+		this(a, b, c);
+		this.container = container;	
+	}
+	public Triangle(Point a, Point b, Point c, Node container, Triangle ab, Triangle bc, Triangle ac) {
+		this(a,b,c,container);
 		this.ab = ab;
 		this.bc = bc;
 		this.ac = ac;
@@ -48,33 +52,85 @@ public class Triangle {
 		else 
 			System.out.println("updateRightNeighbour failed! (this:" + this + "t: " + t);
 	}
-	public boolean contains(Point p) {
+	public Segment rightSegment(Point p1, Point p2) {
+		if (p1 == null || p2 == null)
+			return null;
+		if (p1.equals(a) && p2.equals(b))
+			return new Segment(a, b);
+		if (p1.equals(a) && p2.equals(c))
+			return new Segment(a, c);
+		if (p2.equals(b) && p2.equals(c))
+			return new Segment(b,c);
+		
+		return null;
+	}
+	public Segment pointOnSegment(Point p) {
 		Segment ab = new Segment(a,b);
 		Segment ac = new Segment(a,c);
 		Segment bc = new Segment(b,c);
+		if (ab.contains(p))
+			return ab;
+		if (ac.contains(p))
+			return ac;
+		if (bc.contains(p))
+			return bc;
+		return null;
+	}
+	public Triangle returnNeigbour(Point p1, Point p2) {
+		if (ab.contains(a) && ab.contains(b)) 
+			return ab;
+		else if (ac.contains(a) && ac.contains(c)) 
+			return ac;
+		else if (bc.contains(b) && bc.contains(c))
+			return bc;
+		else 
+			return null;
+	}
+	public boolean isInteriorPoint(Point p) {
 		int p_res = 0;
-		if (ab.contains(p) || ac.contains(p) || bc.contains(p))
-				return true;
-		
-		int a_res = Util.vectorProduct(b, c, a);
-		p_res = Util.vectorProduct(b, c, p);
+		int a_res = Util.rightLeft(b, c, a);
+		p_res = Util.rightLeft(b, c, p);
 		if (a_res != p_res)
 			return false;
 		
-		int b_res = Util.vectorProduct(a, c, b);
-		p_res = Util.vectorProduct(a, c, p);
+		int b_res = Util.rightLeft(c, a, b);
+		p_res = Util.rightLeft(c, a, p);
 		if (b_res != p_res)
 			return false;
 		
-		int c_res = Util.vectorProduct(a, b, c);
-		p_res = Util.vectorProduct(a, b, p);
+		int c_res = Util.rightLeft(a, b, c);
+		p_res = Util.rightLeft(a, b, p);
 		
 		if (c_res != p_res)
 			return false;
 		
 		return true;
 	}
-	
-	
+	public boolean contains(Point p) {
+		if (pointOnSegment(p) != null)
+			return true;
+		return isInteriorPoint(p);
+	}
+	public Point thirdPoint(Point p1, Point p2) {
+		if (p1.equals(a) && p2.equals(b))
+			return c;
+		if (p1.equals(a) && p2.equals(c))
+			return b;
+		if (p2.equals(b) && p2.equals(c))
+			return a;
+		
+		return null;
+	}
+	public String toString() {
+		return "a: " + a + " b: " + b + " c: " + c;
+	}
+	public static void main(String[] args) {
+		double m = Algorithmes.greatestValue(null);
+		Point p_1 = new Point(-8,85);
+		Point p_2 = new Point(m,0);
+		Point p_3 = new Point(-m,-m);
+		Triangle t = new Triangle(p_1,p_2,p_3);
+		System.out.println(t.contains(new Point(0,0)));
+	}   
 	
 }

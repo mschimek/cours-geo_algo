@@ -54,7 +54,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 					// Suppression des points et des segments
 					canvas.points.removeAllElements();
 					canvas.segments.removeAllElements();
-					int n = Integer.parseInt(textNombrePoint.getText());
+					/*int n = Integer.parseInt(textNombrePoint.getText());
 					for (int i = 0; i < n; i++)
 					{
 						canvas.points.addElement(
@@ -63,7 +63,10 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 								2 + Algorithmes.rand(canvas.getHeight()-4)
 							)
 						);
-					}
+					} */
+					canvas.points.add(new Point(100,100));
+					canvas.points.add(new Point(75,150));
+					canvas.repaint();
 					canvas.calculer();
 					canvas.repaint();
 				}

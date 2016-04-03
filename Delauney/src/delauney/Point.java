@@ -24,7 +24,9 @@ public class Point
 			return false;
 		
 		Point p = (Point) o;
-		return Math.abs(x - p.x) < Util.EPSILON && Math.abs(x -p.y) < Util.EPSILON;
+		double res1 = Math.abs(x - p.x);
+		double res2 = Math.abs(y - p.y);
+		return   res1 < Util.EPSILON && res2 < Util.EPSILON;
 	}
 	public String toString() {
 		return "(" + x + "/" + y + ")";
