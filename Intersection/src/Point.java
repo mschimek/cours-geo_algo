@@ -26,6 +26,8 @@ public class Point implements Comparable<Point>
 
 	@Override
 	public int compareTo(Point arg) {
+		if (Math.abs(y - arg.y) <= EPSILON && Math.abs(x - arg.x) <= EPSILON)
+			return 0;
 		double compY = this.y - arg.y;
 		if (compY < - EPSILON )
 			return -1;

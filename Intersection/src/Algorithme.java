@@ -44,8 +44,19 @@ public class Algorithme {
 			for (int j = i + 1; j < segments.size(); j++) {
 				Segment inner = segments.elementAt(j);
 				Point p = Util.intersection(outer, inner, false);
-				
+				if (p == null) {
+					if (outer.upper.equals(inner.upper))
+						p = outer.upper;
+					if (outer.upper.equals(inner.lower))
+						p = outer.upper;
+					if (outer.lower.equals(inner.upper))
+						p = outer.lower;
+					if (outer.lower.equals(inner.lower))
+						p = outer.lower;
+
+				}
 				if (p != null) {
+										
 					p.intersection = true;
 					if (!intersectionsSet.contains(p)) {
 						intersections.add(p);
@@ -161,10 +172,23 @@ public class Algorithme {
 	 * @param lower
 	 * @param sweepLine
 	 */
-	private static void deleteSegments(HashSet<Segment> lower, TreeSet<Segment> sweepLine) {
+	private static void deleteSegments(Event e, HashSet<Segment> lower, TreeSet<Segment> sweepLine, MyComparator comp) {
 		Iterator<Segment> it = lower.iterator();
-		while(it.hasNext())
-			sweepLine.remove(it.next());
+		
+		while(it.hasNext()) {
+			Segment seg = it.next();
+			
+			//System.out.println(sweepLine.contains(seg));
+			if (!sweepLine.contains(seg)) {
+				comp.setY(e.y - MyComparator.EPSILON - MyComparator.FORWARD);
+				sweepLine.remove(seg);
+				comp.setY(e.y);
+			}
+			else {
+				sweepLine.remove(seg);
+			}
+			
+		}
 	}
 	
 	private static void  insertInSweepLine(Event e, TreeSet<Segment> sweepLine, MyComparator comp) {
@@ -305,13 +329,15 @@ public class Algorithme {
 		HashSet<Segment> upper = e.upper;
 		HashSet<Segment> lower = e.lower;
 		HashSet<Segment> cut = e.cut;
-		
+		//comp.setY(e.y - MyComparator.FORWARD - MyComparator.EPSILON);
+		deleteSegments(e, lower, sweepLine, comp);
+		deleteSegments(e, cut, sweepLine, comp);
+		deleteLowerFromCut(e);
 		//U(e) + L(e) + C(e) contain more than one segment
 		if (upper.size() + lower.size() + cut.size() > 1)
 			printIntersections(e, intersections);
 		
-		deleteSegments(lower, sweepLine);
-		deleteSegments(cut, sweepLine);
+		
 		
 		insertInSweepLine(e, sweepLine, comp);
 		
@@ -327,11 +353,22 @@ public class Algorithme {
 			Segment right = rightmost(e);
 			Segment left_left = sweepLine.lower(left);
 			Segment right_right = sweepLine.higher(right);
-			newEvent(left,left_left,e,queue);
+			
+			if(!Util.isHorizontal(left))
+				newEvent(left,left_left,e,queue);
+			
 			newEvent(right,right_right,e,queue);
 		}
 	}
 	
+	private static void deleteLowerFromCut(Event e) {
+		Iterator<Segment> it = e.lower.iterator();
+		while(it.hasNext()) {
+			e.cut.remove(it.next());
+			
+		}
+		
+	}
 	/** Retourne un nombre aleatoire entre 0 et n-1. */
 	static int rand(int n)
 	{

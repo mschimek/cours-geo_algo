@@ -57,8 +57,9 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		load.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent evt) {
 				try {
-				canvas.points.removeAll(canvas.points);
-				FileReader fr = new FileReader("30Punkte.out");
+				canvas.points.clear();
+				canvas.segments.clear();
+				FileReader fr = new FileReader("50Points2.out");
 			    BufferedReader br = new BufferedReader(fr);
 			    String line = br.readLine();
 			    while(line != null) {
@@ -112,29 +113,51 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 					int n = Integer.parseInt(textNombrePoint.getText());
 					if (n % 2 == 1)
 						n++;
-					HashSet<Point> pointSet = new HashSet<Point>();
-					for (int i = 0; i < n; i++)
-					{
-						
-						Point p = new Point(
-								2 + Algorithme.rand(canvas.getWidth()-4),
-								2 + Algorithme.rand(canvas.getHeight()-4));
-						
-						if (pointSet.contains(p)) 
-							continue;
-						
-						pointSet.add(p);
-						canvas.points.addElement(
-							p
-						);
+					int j = 0;
+					boolean b = false;
+					Vector<Point> givenPoints = new Vector<Point>();
+					do {
+						givenPoints.clear();
+						canvas.points.clear();
+						canvas.segments.clear();
+						j++;
+						System.out.print(" dj = " + j);
+						HashSet<Point> pointSet = new HashSet<Point>();
+						for (int i = 0; i < n; i++)
+						{
+							
+							Point p = new Point(
+									2 + Algorithme.rand(canvas.getWidth()-4),
+									2 + Algorithme.rand(canvas.getHeight()-4));
+							
+							if (pointSet.contains(p)) 
+								continue;
+							
+							pointSet.add(p);
+							canvas.points.addElement(
+								p
+							);
+							
+						}
+						if (canvas.points.size() % 2 == 1)
+							canvas.points.remove(canvas.points.size()-1);
+						givenPoints.addAll(canvas.points);
+
+						 
+						canvas.segments = canvas.construireSegment(canvas.points);
+						b = j < 10000 && Algorithme.bruteForce(canvas.segments).getIntersections().size() == Algorithme.algorithme1(canvas.segments).getIntersections().size();
+						if(!b) {
+							for (int k = 0; k < givenPoints.size(); k++) {
+								System.out.println(givenPoints.elementAt(k));
+							}
+						}
+						canvas.calculer();
+			
+						System.out.print(" fj= " + j);
 						
 					}
-					if (canvas.points.size() % 2 == 1)
-						canvas.points.remove(canvas.points.size()-1);
-					
-					canvas.segments = canvas.construireSegment(canvas.points);
-					canvas.calculer();
-					
+					while(b);
+								
 					canvas.repaint();
 		
 				}
@@ -157,6 +180,9 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		// Ajout des boutons au nord
 		add(panelBoutons, BorderLayout.SOUTH);
 	}
+	
+	
+	
 }
 
 /** La classe CanvasSaisirPointsAfficherSegments. */
@@ -292,6 +318,7 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 			}
 			else {
 				Point p = points.elementAt(numSelectedPoint);
+				
 				//System.out.println("Seclect by click "+ numSelectedPoint);
 				if (drawingLine) {
 					secondPoint = p;
@@ -378,11 +405,11 @@ class CanvasSaisirPointsAfficherSegments extends JPanel implements MouseListener
 	{
 		
 		
-		
 		System.out.println("new calculation: segmentSize " + segments.size());
 		
-		Result res1 = Algorithme.bruteForce(segments);
 		
+		
+		Result res1 = Algorithme.bruteForce(segments);
 		Result res = Algorithme.algorithme1(segments);
 
 		System.out.println("intersection bruteForce:" + res1.getIntersections().size());

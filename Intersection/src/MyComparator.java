@@ -1,8 +1,8 @@
 
 public class MyComparator implements java.util.Comparator<Segment>  {
 
-	public static final double EPSILON = 1E-12;
-	public static final double FORWARD = 5E-10;
+	public static final double EPSILON = 1E-11;
+	public static final double FORWARD = 5E-9;
 	private double y = 0.0;
 	public void setY(double y) {
 		this.y = y;
@@ -19,7 +19,7 @@ public class MyComparator implements java.util.Comparator<Segment>  {
 		if (Util.isHorizontal(s2))
 			return compare(s2,s1) * -1;
 		
-		if(Util.isHorizontal(s1)) {
+		if(Util.isHorizontal(s1)) {		
 				double s2_x = Util.intersection(s2, y + FORWARD);
 				int res =  s1.upper.compareTo(new Point(s2_x,s1.upper.y));
 /*				if (res == 0)
