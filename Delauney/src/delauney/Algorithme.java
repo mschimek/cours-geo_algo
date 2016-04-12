@@ -14,13 +14,13 @@ class Algorithmes {
 		Vector<Segment> segments = new Vector<Segment>();
 		
 		double m = greatestValue(points);
-		Point p_1 = new Point(m,0);
+		Point p_1 = new Point(-m,-m);
 		Point p_2 = new Point(0,m);
-		Point p_3 = new Point(-m,-m);
+		Point p_3 = new Point(m,0);
 		Triangle initialTriangle = new Triangle(p_1, p_2, p_3);
-		Triangle dummy1 = new Triangle(p_1, p_2, new Point(5*m,0)); 
+		Triangle dummy1 = new Triangle(p_1, p_2, new Point(-5*m,0)); 
 		Triangle dummy2 = new Triangle(p_1, p_3, new Point(5*m,0)); 
-		Triangle dummy3 = new Triangle(p_2, p_3, new Point(-5*m, -m));
+		Triangle dummy3 = new Triangle(p_2, p_3, new Point(5*m,0));
 		initialTriangle.ab = dummy1;
 		initialTriangle.ac = dummy2;
 		initialTriangle.bc = dummy3;
@@ -36,7 +36,7 @@ class Algorithmes {
 		HashSet<Triangle> set = new HashSet<>();
 		Tree.getLeaves(root, set);
 		
-		return getSegments(set);
+		return filterSegments(getSegments(set), p_1, p_2, p_3);
 	}
 	static Vector<Segment> getSegments(HashSet<Triangle> set) {
 		HashSet<Segment> seg = new HashSet<>();
@@ -56,6 +56,36 @@ class Algorithmes {
 		while (iter.hasNext()) {
 			Segment s = iter.next();
 			res.add(s);
+		}
+		return res;
+	}
+	private static Vector<Segment> filterTriangles(HashSet<Triangle> triangles, Point ... negativeFilter) {
+		HashSet<Point> negFilter = new HashSet<Point>();
+		HashSet<Triangle> res = new HashSet<Triangle>(segments.size());
+		for (Point p : negativeFilter)
+			negFilter.add(p);
+		
+		for (int i = 0; i < segments.size(); i++) {
+			Segment s = segments.elementAt(i);
+			Point a = s.a;
+			Point b = s.b;
+			if (!negFilter.contains(a) && !negFilter.contains(b))
+				res.add(s);
+		}
+		return res;
+	}
+	private static Vector<Segment> filterSegments(Vector<Segment> segments, Point ... negativeFilter) {
+		HashSet<Point> negFilter = new HashSet<Point>();
+		Vector<Segment> res = new Vector<Segment>(segments.size());
+		for (Point p : negativeFilter)
+			negFilter.add(p);
+		
+		for (int i = 0; i < segments.size(); i++) {
+			Segment s = segments.elementAt(i);
+			Point a = s.a;
+			Point b = s.b;
+			if (!negFilter.contains(a) && !negFilter.contains(b))
+				res.add(s);
 		}
 		return res;
 	}
@@ -126,6 +156,7 @@ class Algorithmes {
 		if (t.circumscribedCircle.contains(candidate)) {
 			Point p0 = t.thirdPoint(segment.a, segment.b);
 			assert(p0 != null);
+			assert(p.equals(p0)); 	
 			Triangle t1 = new Triangle(p0, segment.a, candidate);
 			Triangle t2 = new Triangle(p0, segment.b, candidate);
 			Node n1 = new Node(t1);

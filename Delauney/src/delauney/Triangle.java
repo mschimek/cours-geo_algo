@@ -10,22 +10,40 @@ public class Triangle {
 	public Circle circumscribedCircle;
 	public Node container = null;
 	public Triangle(Point a, Point b, Point c) {
-		this.a = a;
-		this.b = b;
-		this.c = c;
+		insertSortedPoints(a,b,c);
 		this.circumscribedCircle = circumscribedCircle();
 	}
 	public Triangle(Point a, Point b, Point c, Node container) {
 		this(a, b, c);
 		this.container = container;	
 	}
-	public Triangle(Point a, Point b, Point c, Node container, Triangle ab, Triangle bc, Triangle ac) {
+	public Triangle(Point a, Point b, Point c, Node container, Triangle t1, Triangle t2, Triangle t3) {
 		this(a,b,c,container);
-		this.ab = ab;
-		this.bc = bc;
-		this.ac = ac;
+		updateNeighbour(t1);
+		updateNeighbour(t2);
+		updateNeighbour(t3);
 	}
-	
+	private void insertSortedPoints(Point a, Point b, Point c) {
+		Point[] arr = {a,b,c};
+		java.util.Arrays.sort(arr);
+		this.a = arr[0];
+		this.b = arr[1];
+		this.c = arr[2];
+		
+			
+	}
+	public void updateNeighbour(Triangle t) {
+		if (t.contains(a) && t.contains(b))
+				ab = t;
+		else if (t.contains(a) && t.contains(c))
+				ac = t;
+		else if (t.contains(b) && t.contains(c)) 
+				bc = t;
+		else {
+			throw new IllegalArgumentException("Triangle t + " + t  + " is not a neighbour of the triangle: " + this);
+		}
+		
+	}
 	public Circle circumscribedCircle(){
 		double var = Util.adaptedCrossProduct(Util.vector(b, a), Util.vector(c,b));
 		var = var * var;
@@ -42,27 +60,17 @@ public class Triangle {
 	    double radius = Util.eucledianDistance(center, a);
 	    return new Circle(center,radius);
 	}
-	public void updateRightNeighbour(Triangle t) {
-		if (t.contains(a) && t.contains(b)) 
-			ab = t;
-		else if (t.contains(a) && t.contains(c)) 
-			ac = t;
-		else if (t.contains(b) && t.contains(c))
-			bc = t;
-		else 
-			System.out.println("updateRightNeighbour failed! (this:" + this + "t: " + t);
-	}
 	public Segment rightSegment(Point p1, Point p2) {
 		if (p1 == null || p2 == null)
 			return null;
-		if (p1.equals(a) && p2.equals(b))
+		else if ((p1.equals(a) && p2.equals(b)) || (p1.equals(b)&& p2.equals(a))) 
 			return new Segment(a, b);
-		if (p1.equals(a) && p2.equals(c))
+		else if ((p1.equals(a) && p2.equals(c)) || (p1.equals(c)) && p2.equals(a))
 			return new Segment(a, c);
-		if (p2.equals(b) && p2.equals(c))
+		else if ((p1.equals(b) && p2.equals(c)) || (p1.equals(c)) && p2.equals(b))
 			return new Segment(b,c);
-		
-		return null;
+		else 
+			throw new IllegalArgumentException("Points p1 and p2 are not points of the triangle");
 	}
 	public Segment pointOnSegment(Point p) {
 		Segment ab = new Segment(a,b);
@@ -84,7 +92,7 @@ public class Triangle {
 		else if (bc.contains(p1) && bc.contains(p2))
 			return bc;
 		else 
-			return null;
+			throw new IllegalArgumentException("Points are not coins of the triagle");
 	}
 	public boolean isInteriorPoint(Point p) {
 		int p_res = 0;
@@ -118,8 +126,7 @@ public class Triangle {
 			return b;
 		if ((p1.equals(b) && p2.equals(c)) || (p1.equals(c) && p2.equals(b)))
 			return a;
-		
-		return null;
+		throw new IllegalArgumentException("Points are not coins of the triagle");
 	}
 	public String toString() {
 		return "a: " + a + " b: " + b + " c: " + c;

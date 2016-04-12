@@ -66,6 +66,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 					} */
 					canvas.points.add(new Point(100,100));
 					canvas.points.add(new Point(75,150));
+					canvas.points.add(new Point(200,200));
 					canvas.repaint();
 					canvas.calculer();
 					canvas.repaint();

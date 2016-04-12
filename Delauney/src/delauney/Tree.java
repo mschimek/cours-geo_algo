@@ -87,29 +87,44 @@ public class Tree {
 
 	public static void flipUpdateNeighbours(Triangle parent1, Triangle child1, 
 			  Triangle parent2, Triangle child2, Segment oldBorder) {
-		Point thirdPoint_parent1 = parent1.thirdPoint(oldBorder.a, oldBorder.b);
-		Point thirdPoint_parent2 = parent2.thirdPoint(oldBorder.a, oldBorder.b);
+		Point commonPointA = oldBorder.a;
+		Point commonPointB = oldBorder.b;
+		Point thirdParent1 = parent1.thirdPoint(oldBorder.a, oldBorder.b);
+		Point thirdParent2 = parent2.thirdPoint(oldBorder.a, oldBorder.b);
 		
-		child1.updateRightNeighbour(parent1);
-		child1.updateRightNeighbour(parent2);
-		child1.updateRightNeighbour(child2);
+		child1.updateNeighbour(child2);
+		child2.updateNeighbour(child1);
 		
-		child2.updateRightNeighbour(parent1);
-		child2.updateRightNeighbour(parent2);
-		child2.updateRightNeighbour(child1);
-		
-		if (child1.contains(thirdPoint_parent1) && child1.contains(oldBorder.a)) {
-			parent1.returnNeigbour(thirdPoint_parent1, oldBorder.a).updateRightNeighbour(child1);
-			parent1.returnNeigbour(thirdPoint_parent1, oldBorder.b).updateRightNeighbour(child2);
-			parent2.returnNeigbour(thirdPoint_parent2, oldBorder.a).updateRightNeighbour(child1);
-			parent2.returnNeigbour(thirdPoint_parent2, oldBorder.b).updateRightNeighbour(child2);
+		if (!child1.contains(commonPointA)) {
+			Point tmp = commonPointA;
+			commonPointA = commonPointB;
+			commonPointB = tmp;
+			
 		}
-		else {
-			parent1.returnNeigbour(thirdPoint_parent1, oldBorder.a).updateRightNeighbour(child2);
-			parent1.returnNeigbour(thirdPoint_parent1, oldBorder.b).updateRightNeighbour(child1);
-			parent2.returnNeigbour(thirdPoint_parent2, oldBorder.a).updateRightNeighbour(child2);
-			parent2.returnNeigbour(thirdPoint_parent2, oldBorder.b).updateRightNeighbour(child1);
-		}
+			
+		// update child1
+		Triangle neighbourParent1 = parent1.returnNeigbour(thirdParent1, commonPointA);
+		Triangle neighbourParent2 = parent2.returnNeigbour(thirdParent2, commonPointA);
+				
+			// first neighbour
+			child1.updateNeighbour(neighbourParent1);
+			neighbourParent1.updateNeighbour(child1);
+				
+			// second neighbour
+			child1.updateNeighbour(neighbourParent2);
+			neighbourParent2.updateNeighbour(child1);
+				
+		//update child2
+		neighbourParent1 = parent1.returnNeigbour(thirdParent1, commonPointB);
+		neighbourParent2 = parent2.returnNeigbour(thirdParent2, commonPointB);
+					
+			// first neighbour
+			child2.updateNeighbour(neighbourParent1);
+			neighbourParent1.updateNeighbour(child2);
+					
+			// secondneighbour
+			child2.updateNeighbour(neighbourParent2);
+			neighbourParent2.updateNeighbour(child2);
 		
 	}
 }

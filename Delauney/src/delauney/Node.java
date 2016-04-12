@@ -37,18 +37,23 @@ public class Node {
 		} 
 		return child.getNode(p);
 	}
+	/**
+	 * update all neighbor triangles of 'this' which have a common edge with t
+	 * and update t with the neighbors triangles of 'this'
+	 * @param t
+	 */
 	private void updateNeighbours(Triangle t) {
 		if (t.contains(triangle.a) && t.contains(triangle.b)) {
-			t.updateRightNeighbour(triangle.ab);
-			triangle.ab.updateRightNeighbour(t);
+			t.updateNeighbour(triangle.ab);
+			triangle.ab.updateNeighbour(t);
 		}
 		if (t.contains(triangle.a) && t.contains(triangle.c)) {
-			t.updateRightNeighbour(triangle.ac);
-			triangle.ac.updateRightNeighbour(t);
+			t.updateNeighbour(triangle.ac);
+			triangle.ac.updateNeighbour(t);
 		}
 		if (t.contains(triangle.b) && t.contains(triangle.c)) {
-			t.updateRightNeighbour(triangle.bc);
-			triangle.bc.updateRightNeighbour(t);
+			t.updateNeighbour(triangle.bc);
+			triangle.bc.updateNeighbour(t);
 		}
 	}
 	public void flip(Node a, Node b) {
@@ -66,16 +71,16 @@ public class Node {
 		childC = new Node(c);
 		
 		updateNeighbours(a);
-		a.updateRightNeighbour(b);
-		a.updateRightNeighbour(c);
+		a.updateNeighbour(b);
+		a.updateNeighbour(c);
 		
 		updateNeighbours(b);
-		b.updateRightNeighbour(a);
-		b.updateRightNeighbour(c);
+		b.updateNeighbour(a);
+		b.updateNeighbour(c);
 		
 		updateNeighbours(c);
-		c.updateRightNeighbour(a);
-		c.updateRightNeighbour(b);
+		c.updateNeighbour(a);
+		c.updateNeighbour(b);
 	}
 	public String toString() {
 		return "Triangle: " + triangle + " ChildA: " + (childA!=null) + " childB: " + (childB!=null) + " childC: " + (childC!=null);
