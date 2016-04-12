@@ -77,11 +77,11 @@ public class Triangle {
 		return null;
 	}
 	public Triangle returnNeigbour(Point p1, Point p2) {
-		if (ab.contains(a) && ab.contains(b)) 
+		if (ab.contains(p1) && ab.contains(p2)) 
 			return ab;
-		else if (ac.contains(a) && ac.contains(c)) 
+		else if (ac.contains(p1) && ac.contains(p2)) 
 			return ac;
-		else if (bc.contains(b) && bc.contains(c))
+		else if (bc.contains(p1) && bc.contains(p2))
 			return bc;
 		else 
 			return null;
@@ -112,11 +112,11 @@ public class Triangle {
 		return isInteriorPoint(p);
 	}
 	public Point thirdPoint(Point p1, Point p2) {
-		if (p1.equals(a) && p2.equals(b))
+		if ((p1.equals(a) && p2.equals(b)) || (p1.equals(b) && p2.equals(a)))
 			return c;
-		if (p1.equals(a) && p2.equals(c))
+		if ((p1.equals(a) && p2.equals(c)) || (p1.equals(c) && p2.equals(a)))
 			return b;
-		if (p2.equals(b) && p2.equals(c))
+		if ((p1.equals(b) && p2.equals(c)) || (p1.equals(c) && p2.equals(b)))
 			return a;
 		
 		return null;

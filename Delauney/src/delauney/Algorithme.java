@@ -18,9 +18,9 @@ class Algorithmes {
 		Point p_2 = new Point(0,m);
 		Point p_3 = new Point(-m,-m);
 		Triangle initialTriangle = new Triangle(p_1, p_2, p_3);
-		Triangle dummy1 = new Triangle(p_1, p_2, new Point(m+10000,0)); 
-		Triangle dummy2 = new Triangle(p_1, p_3, new Point(m+10000,0)); 
-		Triangle dummy3 = new Triangle(p_2, p_3, new Point(-100000, m));
+		Triangle dummy1 = new Triangle(p_1, p_2, new Point(5*m,0)); 
+		Triangle dummy2 = new Triangle(p_1, p_3, new Point(5*m,0)); 
+		Triangle dummy3 = new Triangle(p_2, p_3, new Point(-5*m, -m));
 		initialTriangle.ab = dummy1;
 		initialTriangle.ac = dummy2;
 		initialTriangle.bc = dummy3;
