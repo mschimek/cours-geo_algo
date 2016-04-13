@@ -1,19 +1,25 @@
 package delauney;
 
 import java.util.HashSet;
+import java.util.Vector;
 
 public class Tree {
 	public static void getLeaves(Node root, HashSet<Triangle> set) {
+		root.visited = true;
+		Vector<Triangle> triangles = new Vector<Triangle>();
 		if (root.childA == null && root.childB == null && root.childC == null) {
 			set.add(root.triangle);
-			return;
+			//System.out.println("got leaf");
+			//return triangles;
 		}
-		if (root.childA != null)
+		if (root.childA != null && !root.childA.visited)
 			getLeaves(root.childA, set);
-		if (root.childB != null)
+		if (root.childB != null && !root.childB.visited)
 			getLeaves(root.childB, set);
-		if (root.childC != null)
+		if (root.childC != null && !root.childC.visited)
 			getLeaves(root.childC, set);
+		
+		
 		
 		
 	}
@@ -29,60 +35,59 @@ public class Tree {
 		
 		assert(border != null);
 		
-		Point thirdPoint_parent1 = parent1.thirdPoint(border.a, border.b);
+		Point thirdParent1 = parent1.thirdPoint(border.a, border.b);
+		Point thirdParent2 = parent2.thirdPoint(border.a, border.b);
+		Point commonPointA = border.a;
+		Point commonPointB = border.b;
+		
+		child1.updateNeighbour(child2);
+		child2.updateNeighbour(child1);
+		
+		child1.updateNeighbour(child3);
+		child3.updateNeighbour(child1);
+		
+		child2.updateNeighbour(child4);
+		child4.updateNeighbour(child2);
+		
+		child3.updateNeighbour(child4);
+		child4.updateNeighbour(child3);
+		
+		if (!child1.contains(commonPointA)) {
+			Point tmp = commonPointA;
+			commonPointA = commonPointB;
+			commonPointB = tmp;
+		}
 		
 		// child1
-		if (child1.contains(thirdPoint_parent1) && child1.contains(border.a)) {
-			child1.updateRightNeighbour(parent1.returnNeigbour(thirdPoint_parent1, border.a));
-			parent1.returnNeigbour(thirdPoint_parent1, border.a).updateRightNeighbour(child1);
-		}
-		else {
-			child1.updateRightNeighbour(parent1.returnNeigbour(thirdPoint_parent1, border.b));
-			parent1.returnNeigbour(thirdPoint_parent1, border.b).updateRightNeighbour(child1);
-		}
-		child1.updateRightNeighbour(child3);
-		child1.updateRightNeighbour(child2);
-		
+		Triangle neighbour = parent1.returnNeigbour(thirdParent1, commonPointA);
+		child1.updateNeighbour(neighbour);
+		neighbour.updateNeighbour(child1);
 		
 		//child2
-		if (child2.contains(thirdPoint_parent1) && child2.contains(border.a)){
-			child2.updateRightNeighbour(parent1.returnNeigbour(thirdPoint_parent1, border.a));
-			parent1.returnNeigbour(thirdPoint_parent1, border.a).updateRightNeighbour(child2);
-		}
-		else {
-			child2.updateRightNeighbour(parent1.returnNeigbour(thirdPoint_parent1, border.b));
-			parent1.returnNeigbour(thirdPoint_parent1, border.b).updateRightNeighbour(child2);
-		}
+		neighbour = parent1.returnNeigbour(thirdParent1, commonPointB);
+		child2.updateNeighbour(neighbour);
+		neighbour.updateNeighbour(child2);
 		
-		child2.updateRightNeighbour(child4);
-		child2.updateRightNeighbour(child1);
+		//child3
+		neighbour = parent2.returnNeigbour(thirdParent2, commonPointA);
+		child3.updateNeighbour(neighbour);
+		neighbour.updateNeighbour(child3);
 		
-		Point thirdPoint_parent2 = parent2.thirdPoint(border.a, border.b);
+		//child4
+		neighbour = parent2.returnNeigbour(thirdParent2, commonPointB);
+		child4.updateNeighbour(neighbour);
+		neighbour.updateNeighbour(child4);
 		
-		// child3
-		if (child3.contains(thirdPoint_parent2) && child3.contains(border.a)) {
-			child3.updateRightNeighbour(parent2.returnNeigbour(thirdPoint_parent2, border.a));
-			parent2.returnNeigbour(thirdPoint_parent2, border.a).updateRightNeighbour(child3);
-		}
-		else {
-			child3.updateRightNeighbour(parent2.returnNeigbour(thirdPoint_parent2, border.b));
-			parent2.returnNeigbour(thirdPoint_parent2, border.b).updateRightNeighbour(child3);
-		}
-		child3.updateRightNeighbour(child1);
-		child3.updateRightNeighbour(child4);
+		Node n1 = new Node(child1);
+		Node n2 = new Node(child2);
+		Node n3 = new Node(child3);
+		Node n4 = new Node(child4);
 		
-		// child4
-		if (child4.contains(thirdPoint_parent2) && child4.contains(border.a)) {
-			child4.updateRightNeighbour(parent2.returnNeigbour(thirdPoint_parent2, border.a));
-			parent2.returnNeigbour(thirdPoint_parent2, border.a).updateRightNeighbour(child4);
-		}
-		else {
-			child4.updateRightNeighbour(parent2.returnNeigbour(thirdPoint_parent2, border.b));
-			parent2.returnNeigbour(thirdPoint_parent2, border.b).updateRightNeighbour(child4);
-		}
-		
-		child4.updateRightNeighbour(child2);
-		child4.updateRightNeighbour(child3);
+		parent1.container.childA = n1;
+		parent1.container.childB = n2;
+		parent2.container.childA = n3;
+		parent2.container.childB = n4;
+			
 	}
 
 	public static void flipUpdateNeighbours(Triangle parent1, Triangle child1, 
@@ -124,7 +129,7 @@ public class Tree {
 					
 			// secondneighbour
 			child2.updateNeighbour(neighbourParent2);
-			neighbourParent2.updateNeighbour(child2);
+			neighbourParent2.updateNeighbour(child2); 
 		
 	}
 }

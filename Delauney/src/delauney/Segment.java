@@ -33,6 +33,11 @@ public class Segment
 		return "a: " + a + " b: " + b + "\n";
 	}
 	public boolean contains(Point p) {
+		if (a.equals(p))
+			return true;
+		if (b.equals(p))
+			return true;
+		
 		double min_x = a.x < b.x ? a.x : b.x;
 		double min_y = a.y < b.y ? a.y : b.y;
 		double max_x = a.x > b.x ? a.x : b.x;
@@ -43,11 +48,37 @@ public class Segment
 		if (p.y < min_y - Util.EPSILON || p.y > max_y + Util.EPSILON)
 			return false;
 		
+		if (Math.abs(b.x - a.x) < Util.EPSILON)
+			return Math.abs(p.x - a.x) < Util.EPSILON;
+		
 		double m =(b.y - a.y)/(b.x - a.x);
 		double c = a.y - m*a.x;
 		
 		return   Math.abs((m*p.x + c) -p.y) < Util.EPSILON;
+		/*
+		//vector form of line equation:
+		double quotientX = 0.0;
+		double quotientY = 0.0;
+		double tmpX = p.x - a.x;
+		double tmpY = p.y - a.y;
+		double directionX = b.x - a.x;
+		double directionY = b.y - a.y;
 		
+		if (Math.abs(directionX) < Util.EPSILON && Math.abs(directionY) < Util.EPSILON)
+			return Math.abs(tmpX) < Util.EPSILON && Math.abs(tmpY) < Util.EPSILON;
+		
+		if (Math.abs(directionX) < Util.EPSILON) {
+			return Math.abs(tmpX) < Util.EPSILON;
+		}
+		if (Math.abs(directionY) < Util.EPSILON) {
+			return Math.abs(tmpY) < Util.EPSILON;
+		}
+		
+		quotientX = tmpX / directionX;
+		quotientY = tmpY / directionY;
+		
+		return Math.abs(quotientX - quotientY) < Util.EPSILON;
+		*/
 	}
 	public static void main(String[] args) {
 		Segment s1 = new Segment(new Point(1E9,0), new Point(0,1E9));

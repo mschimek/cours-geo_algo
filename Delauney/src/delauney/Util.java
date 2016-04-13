@@ -3,7 +3,7 @@ import java.util.Random;
 
 
 public class Util {
-	public static final double EPSILON = 1E-12;
+	public static final double EPSILON = 1E-9;
 	public static Point intersect(Segment s1, Segment s2) {
 		if (s1 == null || s2 == null)
 			return null;

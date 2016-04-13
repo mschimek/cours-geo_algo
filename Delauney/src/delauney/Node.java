@@ -5,6 +5,7 @@ public class Node {
 	public Node childA;
 	public Node childB;
 	public Node childC;
+	public boolean visited = false;
 	
 	public Node(Triangle triangle) {
 		this.triangle = triangle;
@@ -28,6 +29,7 @@ public class Node {
 		return null;		
 	}
 	public Node getNode(Point p) {
+		//System.out.println(this);
 		Node child = getChild(p);
 		if (child == null) {
 			if(triangle.contains(p))
@@ -56,15 +58,6 @@ public class Node {
 			triangle.bc.updateNeighbour(t);
 		}
 	}
-	public void flip(Node a, Node b) {
-		childA = a;
-		childB = b;
-		
-	}
-	public void split(Triangle a, Triangle b) {
-		childA = new Node(a);
-		childB = new Node(b);
-	}
 	public void split(Triangle a, Triangle b, Triangle c) {
 		childA = new Node(a);
 		childB = new Node(b);
@@ -81,6 +74,30 @@ public class Node {
 		updateNeighbours(c);
 		c.updateNeighbour(a);
 		c.updateNeighbour(b);
+	}
+	public void visit(int spaces) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < spaces; i++)
+			sb.append(" ");
+		System.out.println(sb + "(triangle: " + triangle);
+		System.out.print(sb + "( childA: ");
+		if (childA != null)
+			childA.visit(spaces+2);
+		else
+			System.out.println(sb + "null )");
+		System.out.print(sb + "( childB: ");
+		if (childB != null)
+			childB.visit(spaces + 2);
+		else
+			System.out.println(sb + "null )");
+		
+		System.out.print(sb + "( childC: ");
+		if (childC != null)
+			childC.visit(spaces + 2);
+		else
+			System.out.println(sb + "null )");
+		System.out.println(sb + ")");
+		
 	}
 	public String toString() {
 		return "Triangle: " + triangle + " ChildA: " + (childA!=null) + " childB: " + (childB!=null) + " childC: " + (childC!=null);

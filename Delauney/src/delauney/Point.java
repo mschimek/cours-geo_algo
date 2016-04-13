@@ -42,12 +42,13 @@ public class Point implements Comparable<Point>
 			return false;
 		
 		Point p = (Point) o;
+		
 		double res1 = Math.abs(x - p.x);
 		double res2 = Math.abs(y - p.y);
-		return   res1 < Util.EPSILON && res2 < Util.EPSILON;
+		return   res1 <= Util.EPSILON && res2 <= Util.EPSILON;
 	}
 	public String toString() {
-		return "(" + x + "/" + y + ")";
+		return x + "," + y;
 	}
 	
 }
