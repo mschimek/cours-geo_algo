@@ -89,7 +89,7 @@ public class Util {
 			permutation[i] = i;
 		}
 		Random rand = new Random();
-		for (int j = 0; j < 1; j++) {
+		for (int j = 0; j < 2; j++) {
 			for (int i = n - 1; i >= 0; i--) {
 				int r = rand.nextInt(i + 1);
 				int tmp = permutation[r];

@@ -38,18 +38,12 @@ class Algorithmes {
 		System.out.println("finished computation");
 		HashSet<Triangle> set = new HashSet<>(permutation.size());
 		Vector<Circle> circles = new Vector<>(permutation.size());
-		System.out.println("call getLeaves");
 		Tree.getLeaves(root, set);
-		System.out.println("return from getLeaves");
-		System.out.println("call filter");
 		set = filterTriangles(set, p_1, p_2, p_3);
-		System.out.println("return from filter");
 		for (Triangle t : set) {
 			circles.add(t.circumscribedCircle);
 		}
-		System.out.println("call getSegments");
 		Vector<Segment> segs = getSegments(set);
-		System.out.println("return from getSegments");
 		System.out.println("call test");
 		boolean isDelauneyTriang = test(set,points);
 		System.out.println("return from test");
@@ -206,6 +200,7 @@ class Algorithmes {
 		for(int i = 0; i < permutation.length; i++) {
 			res.add(points.elementAt(permutation[i]));
 		}
+		
 		return res;
 	}
 	static boolean test(HashSet<Triangle> triangles, Vector<Point> points) {
@@ -213,11 +208,15 @@ class Algorithmes {
 			Point a = t.a;
 			Point b = t.b;
 			Point c = t.c;
+			int counter = 0;
 			for (Point p : points) {
+				//if (counter > 1000)
+				//	break;
 				if (p.equals(a) || p.equals(b) || p.equals(c))
 					continue;
 				if (t.circumscribedCircle.contains(p))
 					return false;
+				//counter++;
 			}
 		}
 		return true;

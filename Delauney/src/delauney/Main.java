@@ -19,7 +19,7 @@ public class Main  {
 		frame.getContentPane().add(zoneAffichage);
 		 
 		// Dimension de la zone d'affichage
-		zoneAffichage.setPreferredSize(new Dimension(550,550));
+		zoneAffichage.setPreferredSize(new Dimension(700,750));
 		
 		// Resize autour de la zone d'affichage
 		frame.pack();

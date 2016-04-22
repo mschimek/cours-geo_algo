@@ -12,6 +12,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -70,6 +71,10 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		final JTextField textNombrePoint = new JTextField("50");
 		textNombrePoint.setColumns(5);
 		
+		// Creation du bouton nombre de repetitions
+		final JTextField textNombreRepetition = new JTextField("50");
+		textNombreRepetition.setColumns(5);
+		
 		JButton circles = new JButton("Circles");
 		circles.addActionListener( new ActionListener(){
 			public void actionPerformed(ActionEvent evt) {
@@ -105,10 +110,12 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 					canvas.points.removeAllElements();
 					canvas.segments.removeAllElements();
 					int n = Integer.parseInt(textNombrePoint.getText());
-					for (int j = 0; j < 10000; j++) {
+					int numberOfRepetitions = Integer.parseInt(textNombreRepetition.getText());
+					for (int j = 0; j < numberOfRepetitions; j++) {
 						canvas.points.clear();
 						canvas.segments.clear();
 						canvas.circles.clear();
+						TreeSet<Point> tset = new TreeSet<>();
 					
 						
 						for (int i = 0; i < n; i++)
@@ -119,43 +126,23 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 									10 + Algorithmes.rand(canvas.getWidth()-4),
 									10 + Algorithmes.rand(canvas.getHeight()-4)
 								);
-								canvas.points.add(p);
+								tset.add(p);
 							
 						}  
-						Vector<Point> filter = new Vector<Point>(n);
-						for (int i = 0; i < canvas.points.size(); i++) {
-							Point p = canvas.points.elementAt(i);
-							boolean twoTimes = false;
-							for (int k =  i+ 1; k < canvas.points.size(); k++){
-								if (canvas.points.elementAt(k).equals(p)) {
-									twoTimes = true;
-									break;
-								}
-								
-							}
-							if (!twoTimes)
-								filter.add(p);
+						Iterator<Point> it = tset.iterator();
+						while(it.hasNext()) {
+							canvas.points.add(it.next());
 						}
-						canvas.points.clear();
 						
-						Pair mypair = Algorithmes.algorithme1(filter);
-						canvas.points = filter;
+						
+						Pair mypair = Algorithmes.algorithme1(canvas.points);
 						canvas.circles = mypair.circles;
 						canvas.segments = mypair.segments;
 						if (mypair.isDelauneyTriang == false) {
-							//for (Point p : pointSet)
-							//	System.out.println(p);
 							break;
 							
 						}
-							
-						/*
-						canvas.points.add(new Point(100,200));
-						canvas.points.add(new Point(150,150));
-						canvas.points.add(new Point(200, 200));
-						canvas.points.add(new Point(150, 280));
-						canvas.points.add(new Point(120,200));
-						canvas.points.add(new Point(140, 200)); */
+						
 						
 						//canvas.calculer();
 					}
@@ -168,6 +155,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		panelBoutons.add(effacer);
 		panelBoutons.add(rand);
 		panelBoutons.add(textNombrePoint);
+		panelBoutons.add(textNombreRepetition);
 		panelBoutons.add(circles);
 		panelBoutons.add(coordinates);
 		panelBoutons.add(load);
