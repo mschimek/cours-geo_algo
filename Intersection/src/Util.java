@@ -70,13 +70,43 @@ public class Util {
 	}
 	public static Double intersection(Segment s, double y) {
 		Segment y_seg = new Segment(new Point(Integer.MIN_VALUE, y), new Point(Integer.MAX_VALUE, y));
-		//System.out.println("s " + s + "  y_seg " + y_seg);
+
 		Point res = intersection(s, y_seg, true);
 		if (res == null)
 			return null;
 		Double x = res.x;
 		return x;
 		
+	}
+	public static boolean contains(Segment s, Point p) {
+		Point a = s.upper;
+		Point b = s.lower;
+		if (a.equals(p))
+			return true;
+		if (b.equals(p))
+			return true;
+		
+		double min_x = a.x < b.x ? a.x : b.x;
+		double min_y = a.y < b.y ? a.y : b.y;
+		double max_x = a.x > b.x ? a.x : b.x;
+		double max_y = a.y > b.y ? a.y : b.y;
+		
+		if (p.x < min_x - MyComparator.EPSILON || p.x >  max_x + MyComparator.EPSILON)
+			return false;
+		if (p.y < min_y - MyComparator.EPSILON || p.y > max_y + MyComparator.EPSILON)
+			return false;
+		
+		if (Math.abs(b.x - a.x) < MyComparator.EPSILON)
+			return Math.abs(p.x - a.x) < MyComparator.EPSILON;
+		
+		double m =(b.y - a.y)/(b.x - a.x);
+		double c = a.y - m*a.x;
+		
+		return   Math.abs((m*p.x + c) -p.y) < MyComparator.EPSILON;
+	}
+	
+	public static boolean isColinear(Segment s1, Segment s2) {
+		return contains(s1,s2.upper) && contains(s1,s2.lower);
 	}
 	public static Point formula(Segment s1) {
 		Point upper = s1.upper;
@@ -103,11 +133,18 @@ public class Util {
 		
 	}
 	public static void main(String[] args) {
-		Segment s1 = new Segment(new Point(129,3), new Point(233,101));
-		Segment s2 = new Segment(new Point(208,35), new Point(196,121));
-		double y = 72.5102766798419 + MyComparator.FORWARD;
-		double x_1 = intersection(s1,y);
-		double x_2 = intersection(s2, y);
-		System.out.println("x_1 " + x_1 + "   x_2 " + x_2);
+		Segment s1 = new Segment(new Point(577,32), new Point(664,446));
+		Segment s2 = new Segment(new Point(594,109), new Point(665,463));
+		double y = 220;
+		System.out.println(intersection(s1,y) + "   " + intersection(s2,y));
+		y = 200;
+		System.out.println(intersection(s1,y) + "   " + intersection(s2,y));
+		y = 240;
+		System.out.println(intersection(s1,y) + "   " + intersection(s2,y));
+		y = 398;
+		System.out.println(intersection(s1,y) + "   " + intersection(s2,y));
+		y = 420;
+		System.out.println(intersection(s1,y) + "   " + intersection(s2,y));
+		
 	}
 }

@@ -34,8 +34,13 @@ public class Algorithme {
 		System.out.println("intersections " + counter);
 		return new Result(segments,intersections);
 	}
+	
+	/**
+	 * calculates all intersection points using the brute force method
+	 * @param segments
+	 * @return
+	 */
 	static Result bruteForce(Vector<Segment> segments) {
-		//System.out.println("bruteForce");
 		Vector<Point> intersections = new Vector<>();
 		HashSet<Point> intersectionsSet = new HashSet<Point>();
 		
@@ -61,12 +66,10 @@ public class Algorithme {
 					if (!intersectionsSet.contains(p)) {
 						intersections.add(p);
 						intersectionsSet.add(p);
-						//System.out.println(p);
 					}
 				}
 			}
 		}
-		//System.out.println("Brute force algorithm found " + intersectionsSet.size() + " intersections");
 		return new Result(segments, intersections);
 	}
 	
@@ -138,7 +141,7 @@ public class Algorithme {
 	 * prints all intersection points of the event e
 	 * @param e 
 	 */
-	private static void iprintIntersections(Event e, List<Point> intersections) {
+	private static void printIntersections(Event e, List<Point> intersections) {
 		counter++;
 		System.out.println("Following Segments intersects at point x:" + e.x + " y:" + e.y);
 		Point inter = new Point(e.x, e.y);
@@ -158,14 +161,11 @@ public class Algorithme {
 			System.out.println("\t" + it.next());
 		
 	}
-	private static void printIntersections(Event e, List<Point> intersections) {
+	private static void dummyPrintIntersections(Event e, List<Point> intersections) {
 		counter++;
 		Point inter = new Point(e.x, e.y);
 		inter.intersection = true;
 		intersections.add(inter);
-		//System.out.println(inter);
-		
-		
 	}
 	/**
 	 * removes all segments contained in the list segments from the state of the sweepline
@@ -195,7 +195,8 @@ public class Algorithme {
 		comp.setY(e.y);
 		Iterator<Segment> it = e.cut.iterator();
 		List<Segment> horizontalSwitched = new ArrayList<>();
-		double x_max = Integer.MIN_VALUE;
+		
+		double x_max = -1;
 		int count = 0;
 		
 		while(it.hasNext()) {
@@ -229,6 +230,8 @@ public class Algorithme {
 			Segment s = it.next();
 			if (count > 0)
 				s.upper.x = x_max + MyComparator.FORWARD;
+			else 
+				s.upper.x += MyComparator.FORWARD;
 			boolean b = sweepLine.contains(s);
 			sweepLine.add(s);
 			 b = sweepLine.contains(s);
@@ -236,6 +239,11 @@ public class Algorithme {
 			
 		
 	}
+	/**
+	 * finds the segment in the current event which is at the leftmost position
+	 * @param e
+	 * @return
+	 */
 	public static Segment leftmost(Event e) {
 		Segment seg = null;
 		double x = Integer.MAX_VALUE;
@@ -272,6 +280,12 @@ public class Algorithme {
 		}
 		return seg;
 	}
+	
+	/**
+	 * finds the element in the current event which is at the rightmost position
+	 * @param e
+	 * @return
+	 */
 	public static Segment rightmost(Event e) {
 		Segment seg = null;
 		double x = Integer.MIN_VALUE;
@@ -308,6 +322,13 @@ public class Algorithme {
 		}
 		return seg;
 	}
+	/**
+	 * if s1 and s2 have an intersection the method inserts this new event in the priority queue
+	 * @param s1
+	 * @param s2
+	 * @param e
+	 * @param queue
+	 */
 	private static void newEvent(Segment s1, Segment s2, Event e, TreeSet<Event> queue) {
 		Point res = Util.intersection(s1, s2, false);
 		if (res == null)
@@ -323,17 +344,25 @@ public class Algorithme {
 			newEvent.cut.add(s2);
 		addToQueue(newEvent, queue);
 	}
+	/**
+	 *  treats an event
+	 * @param e
+	 * @param queue
+	 * @param sweepLine
+	 * @param comp
+	 * @param intersections
+	 */
 	public static void handleEvent(Event e, TreeSet<Event> queue, 
 			TreeSet<Segment> sweepLine, MyComparator comp , List<Point> intersections) {
 		
 		HashSet<Segment> upper = e.upper;
 		HashSet<Segment> lower = e.lower;
 		HashSet<Segment> cut = e.cut;
-		//comp.setY(e.y - MyComparator.FORWARD - MyComparator.EPSILON);
+		
 		deleteSegments(e, lower, sweepLine, comp);
 		deleteSegments(e, cut, sweepLine, comp);
 		deleteLowerFromCut(e);
-		//U(e) + L(e) + C(e) contain more than one segment
+
 		if (upper.size() + lower.size() + cut.size() > 1)
 			printIntersections(e, intersections);
 		

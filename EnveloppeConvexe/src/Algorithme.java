@@ -1,8 +1,4 @@
-
-import java.io.*;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.Random;
 import java.util.Stack;
 import java.util.Vector;
@@ -14,43 +10,7 @@ class Algorithmes {
 	static Vector<Segment> algorithme1(Vector<Point> points)
 	{
 		System.out.println("Length Points " + points.size());
-		// Creation de la liste des segments
-		Vector<Segment> segments = new Vector<Segment>();
 		Vector<Point> adapted = deleteDuplicates(points);
-		for (int i = 0; i < points.size(); i++) {
-			System.out.println("POINT:" + points.elementAt(i).x + ":" + points.elementAt(i).y);
-					}
-		/*PrintWriter pWriter = null;
-        try {
-            pWriter = new PrintWriter(new BufferedWriter(new FileWriter("test")));
-            for (int i = 0; i < points.size(); i++) {
-    			pWriter.println("POINT:" + points.elementAt(i).x + ":" + points.elementAt(i).y);
-    		}
-            
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } finally {
-            if (pWriter != null){
-                pWriter.flush();
-                pWriter.close();
-            }
-        } */
-		
-		
-	/*	for (int i = 0; i < points.size(); i++) {
-			Point p1 = points.elementAt(i);
-			System.out.println("Point: x = " + p1.x + "  y = " + p1.y + "  angle = " + p1.angle);
-		}
-		Point lowest = findLowestPoint(points);
-		System.out.println("LowestPoint : x = " + lowest.x + " y = " + lowest.y);*/
-		
-		System.out.println("length adapted points " + adapted.size());
-		
-	/*	for (int i = 0; i < points.size(); i++) {
-			Point p1 = points.elementAt(i);
-			System.out.println("Point: x = " + p1.x + "  y = " + p1.y + "  angle = " + p1.angle);
-		}
-		System.out.println();*/
 		return calculerEnveloppeConv(adapted);
 		
 	}
@@ -78,16 +38,13 @@ class Algorithmes {
 		}
 		return res;
 	}
-	static int caractizeTriangle(Point p1, Point p2, Point p3) {
-		double arg = (p2.x - p1.x)*(p3.y - p1.y) - (p3.x * - p1.x)*(p2.y - p1.y);
-		return (arg > 0) ? 1 : -1;
-	}
+
 	static double calculateAngle(Point p1, Point p2, Point p3) {
 		Vector2D v1 = new Vector2D(p2, p1);
 		Vector2D v2 = new Vector2D(p2, p3);
 		return Vector2D.angle(v1, v2);
 	}
-	/** trier par angle et comme deuxième parametre par distance croissante depuis le point de reference */
+	/** sort by angle and as a second parameter by distance from reference point */
 	static Vector<Point> sortByAngle(Vector<Point> points) {
 		if (points == null)
 			return null;
@@ -99,6 +56,11 @@ class Algorithmes {
 		Collections.sort(res);
 		return res;
 	}
+	/**
+	 * calculate for all points angle and distance to the reference point (= lowest Point)
+	 * @param points
+	 * @return
+	 */
 	static Vector<Point> calculateAnglesAndDistance(Vector<Point> points) {
 		if (points == null)
 			return null;
@@ -116,7 +78,8 @@ class Algorithmes {
 		}
 		return points;
 	}
-	static Point findLowestPoint(Vector<Point> points) {
+	
+	private static Point findLowestPoint(Vector<Point> points) {
 		if (points == null)
 			return null;
 		Point res = new Point(Double.MAX_VALUE, Double.MIN_VALUE);
@@ -133,7 +96,14 @@ class Algorithmes {
 		}
 		return res;
 	}
-	static boolean checkNextTriangle(Stack<Point> stack, Point curPoint) {
+	/**
+	 * checks whether curPoint is on the righthand or lefthand side of the vector formed by the two topmost elements on the stack
+	 * if curPoint is on the lefthand side executes stack.pop()
+	 * @param stack
+	 * @param curPoint
+	 * @return
+	 */
+	private static boolean checkNextTriangle(Stack<Point> stack, Point curPoint) {
 		if (stack.size() < 2)
 			return false;
 		
@@ -159,6 +129,11 @@ class Algorithmes {
 		double produit = x1 * y2 - y1 * x2;
 		return produit > 0 ? 1 : -1;
 	}
+	/**
+	 * main function
+	 * @param points
+	 * @return
+	 */
 	static Vector<Segment> calculerEnveloppeConv(Vector<Point> points) {
 		Vector<Segment> envConv = new Vector<>();
 		
@@ -185,7 +160,7 @@ class Algorithmes {
 		}
 		
 		
-		
+		// calculates segments
 		Point head = stack.pop();
 		Point p1 = head;
 		Point p2 = null;
@@ -250,5 +225,5 @@ class Algorithmes {
 			Vector2D v = new Vector2D(p1,p2);
 			return v.length();
 		}
-	}
+	} 
 }

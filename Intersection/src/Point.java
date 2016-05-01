@@ -1,7 +1,6 @@
 /** La classe Point. */
 public class Point implements Comparable<Point>
 {
-	public static final double EPSILON = 1E-12;
 	public boolean intersection = false;
 	/** Le segment associe à ce point */
 	public Segment seg = null;
@@ -26,17 +25,17 @@ public class Point implements Comparable<Point>
 
 	@Override
 	public int compareTo(Point arg) {
-		if (Math.abs(y - arg.y) <= EPSILON && Math.abs(x - arg.x) <= EPSILON)
+		if (Math.abs(y - arg.y) <= MyComparator.EPSILON && Math.abs(x - arg.x) <= MyComparator.EPSILON)
 			return 0;
 		double compY = this.y - arg.y;
-		if (compY < - EPSILON )
+		if (compY < - MyComparator.EPSILON )
 			return -1;
-		if (compY > EPSILON)
+		if (compY > MyComparator.EPSILON)
 			return 1;
 		double compX = this.x - arg.x;
-		if (compX < -EPSILON) 
+		if (compX < -MyComparator.EPSILON) 
 			return -1;
-		if (compX > EPSILON)
+		if (compX > MyComparator.EPSILON)
 			return 1;
 		
 		return 0;

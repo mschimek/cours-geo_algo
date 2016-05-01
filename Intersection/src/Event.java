@@ -4,7 +4,6 @@ import java.util.List;
 
 
 public class Event {
-	public final double EPSILON = 1E-12;
 	public double x;
 	public double y;
 	public HashSet<Segment> upper;
@@ -21,7 +20,7 @@ public class Event {
 		System.out.println("bin gerade hier");
 		if (ob instanceof Event) {
 			Event obj = (Event) ob;
-			if (Math.abs(this.x - obj.x) < EPSILON && Math.abs(this.y - obj.y) < EPSILON)
+			if (Math.abs(this.x - obj.x) < MyComparator.EPSILON && Math.abs(this.y - obj.y) < MyComparator.EPSILON)
 				return true;
 		}
 		return false;

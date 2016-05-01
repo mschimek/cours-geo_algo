@@ -36,35 +36,6 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		// Panel des boutons
 		JPanel panelBoutons = new JPanel();
 		
-		JButton load = new JButton("Load");
-		load.addActionListener( new ActionListener(){
-			public void actionPerformed(ActionEvent evt) {
-				try {
-				canvas.points.clear();
-				canvas.segments.clear();
-				FileReader fr = new FileReader("10PointsDouble.out");
-			    BufferedReader br = new BufferedReader(fr);
-			    String line = br.readLine();
-			    while(line != null) {
-			    	String[] numbers = line.split(",");
-			    	int x = Integer.parseInt(numbers[0]);
-			    	int y = Integer.parseInt(numbers[1]);
-			    	Point p = new Point(x,y);
-			    	
-			    	canvas.points.add(p);
-			    	line = br.readLine();
-			    }
-			    canvas.calculer();
-			    canvas.repaint();
-			    br.close();
-			    }
-			    catch (Exception e) {
-			    	e.printStackTrace();
-			    }
-			    
-			}
-		}
-	);		
 		
 		coordinates.setColumns(10);
 		// Creation du bouton Rand
@@ -72,7 +43,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		textNombrePoint.setColumns(5);
 		
 		// Creation du bouton nombre de repetitions
-		final JTextField textNombreRepetition = new JTextField("50");
+		final JTextField textNombreRepetition = new JTextField("1");
 		textNombreRepetition.setColumns(5);
 		
 		JButton circles = new JButton("Circles");
@@ -158,7 +129,6 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		panelBoutons.add(textNombreRepetition);
 		panelBoutons.add(circles);
 		panelBoutons.add(coordinates);
-		panelBoutons.add(load);
 		setLayout(new BorderLayout());
 		
 		// Ajout du canvas au centre

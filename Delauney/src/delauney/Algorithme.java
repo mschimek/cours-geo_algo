@@ -5,15 +5,19 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Vector;
 
-/** La classe algorithme. */
+
 class Algorithmes {
 	
 	
-	/** Algorithme qui prend un ensemble de points et qui retourne un ensemble de segments. */ 
+	/**
+	 * Takes a vector of points and calculates their delauney triangulation
+	 * @param points
+	 * @return
+	 */
 	static Pair algorithme1(Vector<Point> points)
 	{
+		System.out.println("--------------------------");
 		System.out.println("start algo");
-		HashSet<Triangle> leaves = new HashSet<>(points.size() * 3);
 		double m = greatestValue(points);
 		Point p_1 = new Point(-m,-m);
 		Point p_2 = new Point(1,m);
@@ -32,26 +36,32 @@ class Algorithmes {
 		for(int i = 0; i < permutation.size(); i++) {
 			Point p = permutation.elementAt(i);
 			treatPoint(p, root);
-			//root.visit(0);
-			//System.out.println("------------------------------");
 		}
 		System.out.println("finished computation");
+		
 		HashSet<Triangle> set = new HashSet<>(permutation.size());
 		Vector<Circle> circles = new Vector<>(permutation.size());
+		
 		Tree.getLeaves(root, set);
 		set = filterTriangles(set, p_1, p_2, p_3);
 		for (Triangle t : set) {
 			circles.add(t.circumscribedCircle);
 		}
 		Vector<Segment> segs = getSegments(set);
+		
 		System.out.println("call test");
 		boolean isDelauneyTriang = test(set,points);
 		System.out.println("return from test");
-		Pair pair = new Pair(segs, circles, isDelauneyTriang);
-		
 		System.out.println("Is delauney triangulation: " + isDelauneyTriang);
-		return pair;
+		
+		return new Pair(segs, circles, isDelauneyTriang);
 	}
+	
+	/**
+	 * returns all side of all triangles in the set
+	 * @param set
+	 * @return
+	 */
 	static Vector<Segment> getSegments(HashSet<Triangle> set) {
 		HashSet<Segment> seg = new HashSet<>();
 		
@@ -73,6 +83,13 @@ class Algorithmes {
 		}
 		return res;
 	}
+	
+	/**
+	 * keeps all triangles from the Vector triangles which do not contain one of the points in the negativeFilter
+	 * @param triangles
+	 * @param negativeFilter
+	 * @return
+	 */
 	private static HashSet<Triangle> filterTriangles(HashSet<Triangle> triangles, Point ... negativeFilter) {
 		HashSet<Point> negFilter = new HashSet<Point>();
 		HashSet<Triangle> res = new HashSet<Triangle>(triangles.size());
@@ -87,21 +104,12 @@ class Algorithmes {
 		}
 		return res;
 	}
-	private static Vector<Segment> filterSegments(Vector<Segment> segments, Point ... negativeFilter) {
-		HashSet<Point> negFilter = new HashSet<Point>();
-		Vector<Segment> res = new Vector<Segment>(segments.size());
-		for (Point p : negativeFilter)
-			negFilter.add(p);
-		
-		for (int i = 0; i < segments.size(); i++) {
-			Segment s = segments.elementAt(i);
-			Point a = s.a;
-			Point b = s.b;
-			if (!negFilter.contains(a) && !negFilter.contains(b))
-				res.add(s);
-		}
-		return res;
-	}
+
+	/**
+	 * treats a point
+	 * @param p Point to be treated
+	 * @param root root-vertice of the acyclic triangle graph
+	 */
 	static void treatPoint(Point p, Node root) {
 		Node curNode = root.getNode(p);
 		Triangle triangle = curNode.triangle;
@@ -116,7 +124,6 @@ class Algorithmes {
 			sum += legalizeEdge(p, t3, new Segment(triangle.b, triangle.c), root,0);
 		}
 		else {
-			//System.out.println("else");
 			Segment s = triangle.pointOnSegment(p);
 			Triangle neighbour = triangle.returnNeigbour(s.a, s.b);
 			
@@ -160,9 +167,8 @@ class Algorithmes {
 			sum += legalizeEdge(p, t4, edge, root, 0);
 			
 		}
-		//System.out.println("legalizeChaines " + sum);
-		
 	}
+	
 	private static int legalizeEdge(Point p, Triangle t, Segment segment, Node root, int count) {
 		Triangle neighbour = t.returnNeigbour(segment.a, segment.b);
 		Point candidate = neighbour.thirdPoint(segment.a, segment.b);
@@ -190,7 +196,11 @@ class Algorithmes {
 	public static double greatestValue(Vector<Point> points) {
 		return 100000;
 	}
-	
+	/**
+	 * calculates and returns a random permutation of the Vector points
+	 * @param points
+	 * @return
+	 */
 	static Vector<Point> permutation(Vector<Point> points) {
 		
 		Vector<Point> res = new Vector<Point>(points.size());
@@ -210,19 +220,19 @@ class Algorithmes {
 			Point c = t.c;
 			int counter = 0;
 			for (Point p : points) {
-				//if (counter > 1000)
+				//if (counter > 100)
 				//	break;
 				if (p.equals(a) || p.equals(b) || p.equals(c))
 					continue;
 				if (t.circumscribedCircle.contains(p))
 					return false;
-				//counter++;
+				counter++;
 			}
 		}
 		return true;
 	}
 	
-	/** Retourne un nombre aleatoire entre 0 et n-1. */
+	/** Returns a random number between 0 and n-1 */
 	static int rand(int n)
 	{
 		int r = new Random().nextInt();

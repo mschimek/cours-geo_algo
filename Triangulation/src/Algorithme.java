@@ -32,7 +32,7 @@ class Algorithmes {
 		return segments;
 	}
 
-	static void marquagePoint(Vector<Point> points) {
+	private static void marquagePoint(Vector<Point> points) {
 		for (int i = 0; i < points.size() - 1; i++) {
 			Point p1 = points.elementAt(i);
 			Point p2 = points.elementAt(i + 1);
@@ -44,7 +44,12 @@ class Algorithmes {
 		}
 	}
 
-	static Vector<Point> getVectorDroit(Vector<Point> points) {
+	/**
+	 * renvoie les vector à droite
+	 * @param points
+	 * @return
+	 */
+	private static Vector<Point> getVectorDroit(Vector<Point> points) {
 		Vector<Point> res = new Vector<>();
 		for (int i = 0; i < points.size(); i++) {
 			Point p = points.elementAt(i);
@@ -54,7 +59,12 @@ class Algorithmes {
 		return res;
 	}
 
-	static Vector<Point> getVectorGauche(Vector<Point> points) {
+	/**
+	 * renvoie les points à gauche
+	 * @param points
+	 * @return
+	 */
+	private static Vector<Point> getVectorGauche(Vector<Point> points) {
 		Vector<Point> res = new Vector<>();
 		for (int i = 0; i < points.size(); i++) {
 			Point p = points.elementAt(i);
@@ -64,7 +74,12 @@ class Algorithmes {
 		return res;
 	}
 
-	static Vector<Point> inverser(Vector<Point> points) {
+	/**
+	 * inverse Vector
+	 * @param points
+	 * @return
+	 */
+	private static Vector<Point> inverser(Vector<Point> points) {
 		Vector<Point> res = new Vector<Point>();
 		for (int i = 0; i < points.size(); i++) {
 			Point p = points.elementAt(points.size() - 1 - i);
@@ -112,7 +127,6 @@ class Algorithmes {
 		Vector<Point> droit = getVectorDroit(points);
 		Vector<Point> gauche = getVectorGauche(points);
 		gauche = inverser(gauche);
-		Vector<Point> trie = new Vector<>(points.size());
 
 		return trierParFusion(droit, gauche);
 	}

@@ -58,6 +58,7 @@ public class Node {
 			triangle.bc.updateNeighbour(t);
 		}
 	}
+	/**  splits a node in three new triangles and updates all necessary fields*/
 	public void split(Triangle a, Triangle b, Triangle c) {
 		childA = new Node(a);
 		childB = new Node(b);

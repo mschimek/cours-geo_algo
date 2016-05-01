@@ -4,6 +4,14 @@ import java.util.Random;
 
 public class Util {
 	public static final double EPSILON = 1E-9;
+	
+	/**
+	 * if s1 and s2 intersect the intersection point is returned
+	 * else null
+	 * @param s1
+	 * @param s2
+	 * @return
+	 */
 	public static Point intersect(Segment s1, Segment s2) {
 		if (s1 == null || s2 == null)
 			return null;
@@ -35,6 +43,7 @@ public class Util {
 		double d = x*x + y*y;
 		return d;
 	}
+	
 	public static  double eucledianDistance(Point a, Point b) {
 		double d = squaredEucledianDistance(a,b);
 		if (d == Double.NaN)
@@ -48,19 +57,36 @@ public class Util {
 		return new Point(dest.x - src.x, dest.y - src.y);
 	}
 	
-	
+	/** crossProduct for 2D Vectors
+	 */
 	public static double adaptedCrossProduct(Point a, Point b) {
 		return a.x*b.y - a.y*b.x;
 	}
 	public static double scalarProduct(Point a, Point b) {
 		return a.x * b.x + a.y*b.y;
 	}
+	/** plus for each component 
+	 * e.g. p1 = (x1,y1), p2=(x2,y2) => plus(p1,p2) = (x1+x2,y1+y2)
+	 */
 	public static Point plus(Point a, Point b) {
 		return new Point(a.x + b.x, a.y + b.y);
 	}
+	/** multiply for each component 
+	 * e.g. p1 = (x1,y1), alpha => plus(p1,p2) = (alpha * x1, alpha * y1)
+	 */
 	public static Point factor(double alpha, Point p) {
 		return new Point(alpha * p.x, alpha * p.y);
 	}
+	
+	/** 
+	 * if c is on the lefthand side of the segment [a;b] return 1 
+	 * if c is on the righthand side of the segment [a;b] returns -1
+	 * if c is on the segment [a;b] returns 0
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @return
+	 */
 	public static int rightLeft(Point a, Point b, Point c) {
 		double res = (b.x - a.x)*(c.y - a.y)-(c.x-a.x)*(b.y-a.y);
 		if (Math.abs(res) < EPSILON)
@@ -99,27 +125,12 @@ public class Util {
 		}
 		return permutation;
 	}
-	/*
-	public static void main(String[] args) {
-		Point a = new Point(10,0);
-		Point b = new Point(0,10);
-		Point c = new Point(-10, 0);
-		Triangle t = new Triangle(a,b,c,null);
-		Circle circle = t.circumscribedCircle();
-		boolean answer = circle.onBorder(new Point(0,10.00006));
-		System.out.println(circle);
-		System.out.println(answer);
-		int counter = 0;
-		for(int i = 0; i < 0; i++) {
-			int[] permut = randomPermutation(9);
-			if (permut[0] == 0)
-				counter++;
-			for (int j = 0; j < permut.length; j++) {
-				System.out.print(permut[j] + " ");
-			}
-			System.out.println();
-		}
-		System.out.println("\n counter: " + counter);
+	
+	/*public static void main(String[] args) {
+		Point a = new Point(0,0);
+		Point b = new Point(10,0);
+		Point c = new Point(0, 10);
+		System.out.println(rightLeft(a,b,c));
 	} */
-}
+} 
 

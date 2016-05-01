@@ -48,51 +48,6 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 			}
 		);
 		
-		JButton loadPoints = new JButton("Read");
-		
-		loadPoints.addActionListener( new ActionListener(){
-			public void actionPerformed(ActionEvent evt) {
-				// Suppression des points et des segments
-				canvas.points.removeAllElements();
-				canvas.segments.removeAllElements();
-				File file = new File("manyPointsError");
-
-		        if (!file.canRead() || !file.isFile())
-		            System.exit(0);
-
-		            BufferedReader in = null;
-		        try {
-		            in = new BufferedReader(new FileReader("manyPointsError"));
-		            String zeile = null;
-		            while ((zeile = in.readLine()) != null) {
-		            	//System.out.println(zeile);
-		            	String[] point;
-		                point = zeile.split(":");
-		                //System.out.println(point[0]);
-		                //System.out.println(point[1]);
-		                //System.out.println(point[2]);
-		                double x = Double.parseDouble(point[1]);
-		                double y = Double.parseDouble(point[2]);
-		                if (y > 400 && x < 700) {
-		                	Point p = new Point(x,y);
-		                	canvas.points.add(p);
-		                }
-		                
-		            }
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		        } finally {
-		            if (in != null)
-		                try {
-		                    in.close();
-		                } catch (IOException e) {
-		                }
-		        } 
-		        canvas.calculer();
-				canvas.repaint();
-			}
-		}
-	);
 		
 		// Creation du bouton Rand
 		JButton rand = new JButton("Rand");
@@ -118,7 +73,7 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 						int yCoord = 2 + Algorithmes.rand(canvas.getHeight()-4);
 						
 						Point p = new Point(xCoord, yCoord);
-						System.out.println("new Point x = " + xCoord + " y = " + yCoord);
+						//System.out.println("new Point x = " + xCoord + " y = " + yCoord);
 						if (Algorithmes.Vector2D.distance(center, p) >  limit * OUTERBORDER) {
 							Algorithmes.Vector2D v = new Algorithmes.Vector2D(center,p);
 							double factor = limit * OUTERBORDER / v.length();
@@ -141,7 +96,6 @@ public class ZoneSaisirPointsAfficherSegments extends JPanel  {
 		panelBoutons.add(effacer);
 		panelBoutons.add(rand);
 		panelBoutons.add(textNombrePoint);
-		panelBoutons.add(loadPoints);
 		setLayout(new BorderLayout());
 		
 		// Ajout du canvas au centre
